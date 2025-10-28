@@ -2,23 +2,28 @@
 
 ## Services
 
-* lcEdge
+* `lcEdge`
+
   LeafCuttr instance with all features enabled including:
   - MQTT Broker and Proxy
   - Schema Registry
   - HTTP Proxy
   - Isolated Mode
 
-* lcHub
+* `lcHub`
+
   LeafCuttr instance in default mode
 
-* kafka-ui
+* `kafka-ui`
+
   The web UI can be viewed on port 8080
 
-* lcEdgeProducer
+* `lcEdgeProducer`
+
   producer performance test with schema evolution
 
-* lcEdgeConsumer
+* `lcEdgeConsumer`
+
   consumer performance test
 
 

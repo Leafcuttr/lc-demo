@@ -1,6 +1,6 @@
 # lc-demo
 
-### Services
+## Services
 
 * lcEdge
   LeafCuttr instance with all features enabled including:
@@ -20,3 +20,18 @@
 
 * lcEdgeConsumer
   consumer performance test
+
+
+## HowTo
+
+You can just do a `docker-compose up` in this directory to run everything.
+
+Alternatively, in one terminal run
+```bash
+docker-compose up kafka-ui
+```
+
+And in other term, run the producer or consumer
+```bash
+docker-compose up lcEdgeProducer
+```

@@ -8,8 +8,10 @@ version: '3.8'
 services:                                     
   lcEdge:                                   
     image: ghcr.io/leafcuttr/kafkalite:lc-0.5.2  
-    #volumes:                                                                                   
+    volumes:                                                                                   
       #- lc-edge-data:/klogs/
+      - ./topic-forward-mm2.properties:/etc/topic-forward-mm2.properties
+
     network_mode: "host"                                                                       
       #ports:                                 
       #- 9091:9091                             
@@ -23,6 +25,7 @@ services:
       KAFKA_LC_HTTP_PROXY_PORT: 18000                                                          
         #KAFKA_LC_LOG_SYNC_ALWAYS: "true"
       KAFKA_LC_ISOLATED: "true"          
+      KAFKA_LC_TOPIC_FORWARD_CONFIG: /etc/topic-forward-mm2.properties
                                                
       # To help MM2 create internal topics
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
@@ -50,7 +53,7 @@ services:
       resources:
         limits:
           cpus: '1.0'
-          memory: 1024M
+          memory: 1524M
 
   lcHub:
     image: ghcr.io/leafcuttr/kafkalite:lc-0.5.2 
@@ -128,7 +131,7 @@ services:
       resources:
         limits:
           cpus: '1.0'
-          memory: 500M
+          memory: 600M
   lcEdgeConsumer:                                   
     image: ghcr.io/leafcuttr/kafkalite:lc-0.5.2  
     network_mode: "host"                                                                       

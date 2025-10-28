@@ -46,6 +46,12 @@ services:
 
       JMX_PORT: 9111
 
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1024M
+
   lcHub:
     image: ghcr.io/leafcuttr/kafkalite:lc-0.5.2 
     #volumes:
@@ -89,7 +95,7 @@ services:
       resources:
         limits:
           cpus: '1.0'
-          memory: 512M
+          memory: 750M
 
   kafka-ui:
     #image: provectuslabs/kafka-ui:latest
@@ -104,3 +110,8 @@ services:
     depends_on:
       - lcEdge
       - lcHub
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 400M

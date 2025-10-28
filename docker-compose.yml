@@ -128,3 +128,15 @@ services:
         limits:
           cpus: '1.0'
           memory: 400M
+  lcEdgeConsumer:                                   
+    image: ghcr.io/leafcuttr/kafkalite:lc-0.5.2  
+    network_mode: "host"                                                                       
+    command:
+      /opt/kafka/bin/kafka-consumer-perf-test.sh --topic perfTest --messages 10000000 --timeout 100000 --bootstrap-server localhost:9092 --show-detailed-stats
+    depends_on:
+      - lcEdge
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 400M

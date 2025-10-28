@@ -9,6 +9,7 @@
   - Schema Registry
   - HTTP Proxy
   - Isolated Mode
+  - Topic Forwarding of `perfTest` to `lcHub`
 
 * `lcHub`
 

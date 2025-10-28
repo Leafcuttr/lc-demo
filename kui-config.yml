@@ -1,0 +1,82 @@
+# ======================================================          
+# Kafka Clusters Configuration                                                                 
+# Define all Kafka cluster-specific settings and related integrations.
+# ======================================================
+kafka:
+  clusters:                                                                                    
+    - name: LC-Edge 
+      bootstrap-servers: localhost:9092                                                        
+                                                                                               
+      # Schema Registry connection and authentication details
+      schemaRegistry: http://localhost:8081                                                    
+                                                                                               
+      # Monitoring and metrics collection from the cluster
+      metrics:                                                                                 
+        type: JMX  # Available options: JMX or PROMETHEUS
+        port: 9111  # Port to collect JMX metrics               
+                                                                                               
+      read-only: false  # allow write operations from the UI
+                                               
+      polling-throttle-rate: 0  # Delay (seconds) between polling intervals in UI; 0 = no throttling
+                                               
+    - name: LC-HUB
+      bootstrap-servers: localhost:19092
+                                               
+      # Schema Registry connection and authentication details
+      #schemaRegistry: http://localhost:8081
+                                               
+      # Monitoring and metrics collection from the cluster
+      metrics:                                                                                 
+        type: JMX  # Available options: JMX or PROMETHEUS
+        port: 19111  # Port to collect JMX metrics
+                                                                                               
+      read-only: false  # allow write operations from the UI
+                                               
+      polling-throttle-rate: 0  # Delay (seconds) between polling intervals in UI; 0 = no throttling
+
+  # Prefix to identify internal Kafka topics used by system tools
+  internalTopicPrefix: "_"       
+
+  # Timeout for admin Kafka operations (in milliseconds)
+  admin-client-timeout: 30000
+
+  # Polling behavior for consumer previews in the UI
+  polling:
+    poll-timeout-ms: 1000  # How long to wait for new records (ms)
+    max-page-size: 500  # Maximum number of records per poll
+    default-page-size: 100  # Default number of records per poll
+
+
+# ======================================================
+# WebClient Settings
+# Configuration for HTTP clients used by the app.
+# ======================================================
+webclient:
+  response-timeout-ms: 20000  # Timeout for all outgoing HTTP requests
+  max-in-memory-buffer-size: 20MB  # Maximum buffer size for handling responses
+
+# ======================================================
+# Spring Boot Actuator
+# Enables health, info, and Prometheus endpoints for monitoring.
+# ======================================================
+management:
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "info,health,prometheus"
+
+# ======================================================
+# Application Logging Configuration
+# Configure logging levels for specific packages.
+# ======================================================
+logging:
+  level:
+    root: INFO
+    io.kafbat.ui: INFO
+    reactor.netty.http.server.AccessLog: INFO
+    org.hibernate.validator: WARN

@@ -1,0 +1,106 @@
+version: '3.8'                                                                                 
+                                                                                               
+# Volumes don't work sometimes due to permissions
+#volumes:                                                                                       
+  #lc-edge-data:                                                                                                                                                                                
+  #lc-hub-data:
+
+services:                                     
+  lcEdge:                                   
+    image: ghcr.io/leafcuttr/kafkalite:lc-0.5.2  
+    #volumes:                                                                                   
+      #- lc-edge-data:/klogs/
+    network_mode: "host"                                                                       
+      #ports:                                 
+      #- 9091:9091                             
+      #- 9092:9092                        
+      #- 9111:9111                                                                             
+    environment:                               
+      #KAFKA_LOG_DIRS: "/klogs/"
+      KAFKA_LC_MQTT_BROKER_ENABLE: "true"
+      KAFKA_LC_SCHEMA_REGISTRY_ENABLE: "true"
+      KAFKA_LC_HTTP_PROXY_ENABLE: "true"
+      KAFKA_LC_HTTP_PROXY_PORT: 18000                                                          
+        #KAFKA_LC_LOG_SYNC_ALWAYS: "true"
+      KAFKA_LC_ISOLATED: "true"          
+                                               
+      # To help MM2 create internal topics
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+                                               
+      # Configure listeners for both docker and host communication
+      KAFKA_LISTENERS: CONTROLLER://localhost:9091,HOST://0.0.0.0:9092,DOCKER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: HOST://localhost:9092,DOCKER://kafka:9093                    
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,DOCKER:PLAINTEXT,HOST:PLAINTEXT
+                                               
+      # Settings required for KRaft mode
+      KAFKA_NODE_ID: 1          
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9091
+
+      # Listener to use for broker-to-broker communication
+      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
+
+      # Required for a single node cluster
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1 
+
+      JMX_PORT: 9111
+
+  lcHub:
+    image: ghcr.io/leafcuttr/kafkalite:lc-0.5.2 
+    #volumes:
+      #- lc-hub-data:/klogs/
+    network_mode: "host"
+      #ports:
+      #- 9091:9091
+      #- 9092:9092
+      #- 9111:9111
+    environment:
+      #KAFKA_LOG_DIRS: "/klogs/"
+      #KAFKA_LC_MQTT_BROKER_ENABLE: "true"
+      #KAFKA_LC_SCHEMA_REGISTRY_ENABLE: "true"
+      #KAFKA_LC_HTTP_PROXY_ENABLE: "true"
+      #KAFKA_LC_LOG_SYNC_ALWAYS: "true"
+      #KAFKA_LC_ISOLATED: "true"
+
+      # To help MM2 create internal topics
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+
+      # Configure listeners for both docker and host communication
+      KAFKA_LISTENERS: CONTROLLER://localhost:19091,HOST://0.0.0.0:19092,DOCKER://0.0.0.0:19093 
+      KAFKA_ADVERTISED_LISTENERS: HOST://localhost:19092,DOCKER://kafka:19093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,DOCKER:PLAINTEXT,HOST:PLAINTEXT
+
+      # Settings required for KRaft mode
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:19091
+
+      # Listener to use for broker-to-broker communication
+      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
+
+      # Required for a single node cluster
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1 
+
+      JMX_PORT: 19111
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+
+  kafka-ui:
+    #image: provectuslabs/kafka-ui:latest
+    image: ghcr.io/kafbat/kafka-ui:latest
+    network_mode: "host"
+      #ports:
+      #- 8080:8080
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'true'
+    volumes:
+      - ./kui-config.yml:/etc/kafkaui/dynamic_config.yaml
+    depends_on:
+      - lcEdge
+      - lcHub

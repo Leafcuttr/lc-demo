@@ -115,3 +115,16 @@ services:
         limits:
           cpus: '1.0'
           memory: 400M
+
+  lcEdgeProducer:                                   
+    image: ghcr.io/leafcuttr/kafkalite:lc-0.5.2  
+    network_mode: "host"                                                                       
+    command:
+      /opt/kafka/bin/kafka-producer-perf-test.sh --topic perfTest --num-records 100000000 --throughput -1 --record-size 1000 --producer-props bootstrap.servers=localhost:9092
+    depends_on:
+      - lcEdge
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 400M

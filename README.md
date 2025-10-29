@@ -27,6 +27,10 @@
 
   consumer performance test
 
+* `lcHttpPoster`
+
+  Posts data via HTTP proxy to the `jsonTest` topic on `lcEdge`
+
 
 ## HowTo
 

@@ -20,6 +20,10 @@ services:
     environment:                               
       #KAFKA_LOG_DIRS: "/klogs/"
       KAFKA_LC_MQTT_BROKER_ENABLE: "true"
+      KAFKA_MQTT_AUTH_USERNAME: "demo"
+      KAFKA_MQTT_TOPIC_MAPPING_TEST/TOPIC/+: "from-mqtt"
+
+      KAFKA_MQTT_AUTH_PASSWORD: "demo"
       KAFKA_LC_SCHEMA_REGISTRY_ENABLE: "true"
       KAFKA_LC_HTTP_PROXY_ENABLE: "true"
       KAFKA_LC_HTTP_PROXY_PORT: 18000                                                          
@@ -157,3 +161,22 @@ services:
         limits:
           cpus: '1.0'
           memory: 20M
+
+  mqttPoster:
+    image: python:3.11-slim
+    network_mode: "host"                                                                       
+    working_dir: /app
+    volumes:
+      - ./mqttPoster:/app/
+    command: >
+      sh -c "
+        pip install --no-cache-dir -r requirements.txt &&
+        python poster.py
+      "
+    depends_on:
+      - lcEdge
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 200M

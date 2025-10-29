@@ -27,9 +27,13 @@
 
   consumer performance test
 
-* `lcHttpPoster`
+* `httpPoster`
 
   Posts data via HTTP proxy to the `jsonTest` topic on `lcEdge`
+
+* `mqttPoster`
+
+  Publishes a set of messages via MQTT proxy to a `test/topic/temperature` on `lcEdge`. The topic is part of a topic tree that is mapped to a Kafka topic called `from-mqtt`.
 
 
 ```mermaid
@@ -37,7 +41,8 @@ flowchart LR
   lcEdgeProducer --> EdgeKafka
   lcEdgeProducer -->|schema evolution| SchemaRegistry
   EdgeKafka --> lcEdgeConsumer
-  lcHttpPoster -->|POST /topics/jsonTest| EdgeProxy
+  httpPoster -->|POST /topics/jsonTest| EdgeProxy
+  mqttPoster -->|Publish /test/topic/temperature| EdgeMQTTBroker
   EdgeKafka -. TopicForwarding .-> HubKafka
   kafkaUI --> EdgeCluster
   kafkaUI --> HubCluster
@@ -45,11 +50,11 @@ flowchart LR
   subgraph EdgeCluster[lcEdge]
     direction TB
     EdgeKafka(Kafka)
-    EdgeBroker((MQTT Broker))
+    EdgeMQTTBroker((MQTT Broker))
     EdgeProxy([HTTP Proxy])
     SchemaRegistry[(Schema Registry)]
     EdgeProxy --> EdgeKafka
-    EdgeBroker -->|stores/sends| EdgeKafka
+    EdgeMQTTBroker -->|stores| EdgeKafka
   end
   subgraph HubCluster[lcHub]
     direction TB
@@ -59,11 +64,12 @@ flowchart LR
   kafkaUI[kafka-ui port 8080]
   lcEdgeProducer[lcEdgeProducer]
   lcEdgeConsumer[lcEdgeConsumer]
-  lcHttpPoster[lcHttpPoster]
+  httpPoster[httpPoster]
+  mqttPoster[mqttPoster]
 
   %% Notes
   %% classDef infra stroke:#339,stroke-width:1px;
-  %% class EdgeBroker,HubBroker,SchemaRegistry infra
+  %% class EdgeMQTTBroker,HubBroker,SchemaRegistry infra
 ```
 
 ## HowTo

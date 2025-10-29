@@ -144,3 +144,16 @@ services:
         limits:
           cpus: '1.0'
           memory: 400M
+  httpPoster:
+    image: alpine/curl:latest
+    depends_on:
+      - lcEdge
+    volumes:
+      - ./httpPoster.sh:/usr/local/bin/httpPoster.sh
+    network_mode: "host"                                                                       
+    command: ["sh", "/usr/local/bin/httpPoster.sh"]
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 20M

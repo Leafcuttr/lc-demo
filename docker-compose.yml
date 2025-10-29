@@ -53,7 +53,7 @@ services:
       resources:
         limits:
           cpus: '1.0'
-          memory: 1524M
+          memory: 1800M
 
   lcHub:
     image: ghcr.io/leafcuttr/kafkalite:lc-0.5.2 

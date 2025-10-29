@@ -32,6 +32,40 @@
   Posts data via HTTP proxy to the `jsonTest` topic on `lcEdge`
 
 
+```mermaid
+flowchart LR
+  lcEdgeProducer --> EdgeKafka
+  lcEdgeProducer -->|schema evolution| SchemaRegistry
+  EdgeKafka --> lcEdgeConsumer
+  lcHttpPoster -->|POST /topics/jsonTest| EdgeProxy
+  EdgeKafka -. TopicForwarding .-> HubKafka
+  kafkaUI --> EdgeCluster
+  kafkaUI --> HubCluster
+
+  subgraph EdgeCluster[lcEdge]
+    direction TB
+    EdgeKafka(Kafka)
+    EdgeBroker((MQTT Broker))
+    EdgeProxy([HTTP Proxy])
+    SchemaRegistry[(Schema Registry)]
+    EdgeProxy --> EdgeKafka
+    EdgeBroker -->|stores/sends| EdgeKafka
+  end
+  subgraph HubCluster[lcHub]
+    direction TB
+    HubKafka(Kafka)
+  end
+
+  kafkaUI[kafka-ui port 8080]
+  lcEdgeProducer[lcEdgeProducer]
+  lcEdgeConsumer[lcEdgeConsumer]
+  lcHttpPoster[lcHttpPoster]
+
+  %% Notes
+  %% classDef infra stroke:#339,stroke-width:1px;
+  %% class EdgeBroker,HubBroker,SchemaRegistry infra
+```
+
 ## HowTo
 
 You can just do a `docker-compose up` in this directory to run everything.

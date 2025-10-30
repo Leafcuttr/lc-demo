@@ -7,7 +7,7 @@ version: '3.8'
 
 services:                                     
   lcEdge:                                   
-    image: ghcr.io/leafcuttr/kafkalite:lc-0.5.2  
+    image: ghcr.io/leafcuttr/kafkalite:lc-0.5.3
     volumes:                                                                                   
       #- lc-edge-data:/klogs/
       - ./topic-forward-mm2.properties:/etc/topic-forward-mm2.properties
@@ -60,7 +60,7 @@ services:
           memory: 1800M
 
   lcHub:
-    image: ghcr.io/leafcuttr/kafkalite:lc-0.5.2 
+    image: ghcr.io/leafcuttr/kafkalite:lc-0.5.3
     #volumes:
       #- lc-hub-data:/klogs/
     network_mode: "host"
@@ -124,7 +124,7 @@ services:
           memory: 400M
 
   lcEdgeProducer:                                   
-    image: ghcr.io/leafcuttr/kafkalite:lc-0.5.2  
+    image: ghcr.io/leafcuttr/kafkalite:lc-0.5.3
     network_mode: "host"                                                                       
     command:
       #/opt/kafka/bin/kafka-producer-perf-test.sh --topic perfTest --num-records 100000000 --throughput -1 --record-size 1000 --producer-props bootstrap.servers=localhost:9092
@@ -137,7 +137,7 @@ services:
           cpus: '1.0'
           memory: 600M
   lcEdgeConsumer:                                   
-    image: ghcr.io/leafcuttr/kafkalite:lc-0.5.2  
+    image: ghcr.io/leafcuttr/kafkalite:lc-0.5.3
     network_mode: "host"                                                                       
     command:
       /opt/kafka/bin/kafka-consumer-perf-test.sh --topic perfTest --messages 10000000 --timeout 100000 --bootstrap-server localhost:9092 --show-detailed-stats
